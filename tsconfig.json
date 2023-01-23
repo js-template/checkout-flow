@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "module": "commonjs",
+    "outDir": "dist",
+    "baseUrl": "src",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "declaration": true,
+    "allowJs": true,
+    "skipLibCheck": true,
+    "emitDeclarationOnly": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "incremental": true,
+    "declarationMap": true,
+    "jsx": "react-jsx"
+  },
+  "include": ["src/**/*"],
+  "typedocOptions": {
+    "entryPoints": ["src/**/*"],
+    "out": "docs"
+  },
+  "exclude": ["node_modules", "dist"]
+}
