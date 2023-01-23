@@ -1,0 +1,1 @@
+{"version":3,"file":"PaymentOrderSummary.d.ts","sourceRoot":"","sources":["../../src/components/PaymentOrderSummary.tsx"],"names":[],"mappings":";AAKA,UAAU,iBAAiB;IACzB,QAAQ,CAAC,EAAE,GAAG,CAAC;IACf,WAAW,CAAC,EAAE,GAAG,CAAC;CACnB;AACD,eAAO,MAAM,mBAAmB,8BAA+B,iBAAiB,gBAuI/E,CAAC;AAEF,eAAe,mBAAmB,CAAC"}
