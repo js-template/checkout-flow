@@ -2,6 +2,7 @@ import React, { Fragment, useState } from "react";
 import { Country, State } from "country-state-city";
 import { FormLoader, LoaderGrowing } from "../loader";
 import { useForm } from "react-hook-form";
+import Image from "next/image";
 
 // user data interface
 interface userDataInterface {
@@ -527,7 +528,15 @@ export const CheckOut = ({
                     </button>
                     {/* Add a image  */}
                     <div className="flex justify-center mt-6 w-1/3">
-                      <img src="/2checkout_logo.png" alt="payment icon" width="300" height="100" />
+                      <Image
+                        src="/2checkout_logo.png"
+                        alt="payment icon"
+                        width="300"
+                        height="100"
+                        priority
+                        placeholder="blur"
+                        blurDataURL="/2checkout_logo.png"
+                      />
                     </div>
                     {/* Return to cart */}
                     <div className="flex justify-between mt-6">
@@ -599,12 +608,15 @@ export const CheckOut = ({
                     {/* Image here */}
                     <div className="flex-none">
                       {item?.featured_image ? (
-                        <img
+                        <Image
                           src={item.featured_image}
                           alt="Product"
                           width={90}
                           height={90}
                           className="w-full rounded-md object-cover"
+                          priority
+                          placeholder="blur"
+                          blurDataURL={item.featured_image}
                         />
                       ) : (
                         <div className="w-[90px] h-[90px] rounded-md bg-[#F2F4F4] flex items-center justify-center" />

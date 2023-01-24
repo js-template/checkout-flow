@@ -1,8 +1,8 @@
 {
   "name": "@jstemplate/checkout-flow",
   "version": "0.1.1",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "license": "MIT",
   "exports": {
     ".": {
@@ -14,8 +14,8 @@
   },
   "scripts": {
     "lint": "eslint *.ts*",
-    "build": "tsc & tailwindcss -i ./styles/globals.css -o ./dist/styles.css",
-    "dev": "tsup -w & tailwindcss -i ./styles/globals.css -o ./dist/styles.css -w"
+    "build": "tsup & tailwindcss -i ./styles/globals.css -o ./dist/styles.css --minify",
+    "dev": "tsup -w & tailwindcss -i ./styles/globals.css -o ./dist/styles.css --minify -w"
   },
   "devDependencies": {
     "@types/react": "^18.0.17",
