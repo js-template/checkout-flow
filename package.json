@@ -14,8 +14,8 @@
   },
   "scripts": {
     "lint": "eslint *.ts*",
-    "build": "tsup & tailwindcss -i ./styles/globals.css -o ./dist/styles.css --minify",
-    "dev": "tsup -w & tailwindcss -i ./styles/globals.css -o ./dist/styles.css --minify -w"
+    "build": "tsc & tailwindcss -i ./styles/globals.css -o ./dist/styles.css --minify",
+    "dev": "tsc -w & tailwindcss -i ./styles/globals.css -o ./dist/styles.css --minify -w"
   },
   "devDependencies": {
     "@types/react": "^18.0.17",
