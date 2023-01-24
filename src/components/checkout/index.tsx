@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { Country, State } from "country-state-city";
 import { FormLoader, LoaderGrowing } from "../loader";
 import { useForm } from "react-hook-form";
@@ -6,11 +6,11 @@ import Image from "next/image";
 
 // user data interface
 interface userDataInterface {
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
   email: string;
   phone: string;
-  address: string;
+  address_1: string;
   city: string;
   state: string;
   postcode: string;
@@ -65,8 +65,9 @@ interface companyPolicyDataInterface {
 // check out component props
 interface CheckOutProps {
   loading?: boolean;
-  userData?: userDataInterface;
+  userData?: userDataInterface | undefined;
   formSubmit?: (data: any) => void;
+  couponSubmit?: (data: any) => void;
   autoFill?: boolean;
   cartData?: cartDataInterface[];
   summeryData?: summeryDataInterface;
@@ -80,6 +81,7 @@ export const CheckOut = ({
   loading,
   userData,
   formSubmit,
+  couponSubmit,
   autoFill,
   cartData,
   summeryData,
@@ -91,11 +93,24 @@ export const CheckOut = ({
   const [country, setCountry] = useState(Country.getAllCountries());
   const [state, setState] = useState(State.getAllStates());
   const [loader, setLoader] = useState<boolean>(false);
+  const [couponLoader, setCouponLoader] = useState<boolean>(false);
+
+  // billing form register hook
   const {
     register,
     handleSubmit,
     setValue,
+    watch,
     formState: { errors, isValid },
+  } = useForm({
+    mode: "onBlur",
+  });
+
+  // coupon form register hook
+  const {
+    register: couponRegister,
+    handleSubmit: couponHandleSubmit,
+    formState: { errors: couponErrors, isValid: couponIsValid },
   } = useForm({
     mode: "onBlur",
   });
@@ -160,7 +175,7 @@ export const CheckOut = ({
   /* -------------------------------------------------------------------------- */
   /*      if autoFill is true then auto fill the form using useEffect hook      */
   /* -------------------------------------------------------------------------- */
-  React.useEffect(() => {
+  useEffect(() => {
     if (autoFill && userData) {
       // react hook form setValue
       Object.keys(userData).forEach((key) => {
@@ -176,20 +191,46 @@ export const CheckOut = ({
       // accountPolicy setValues using react hook form setValue
       setValue("accountPolicy", false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autoFill, userData, userLogin]);
+
+  /* -------------------------------------------------------------------------- */
+  /*                           state watch for country                          */
+  /* -------------------------------------------------------------------------- */
+  useEffect(() => {
+    if (watch("country")) {
+      setState(State.getStatesOfCountry(watch("country")));
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [watch("country")]);
 
   /* -------------------------------------------------------------------------- */
   /*                             form submit handler                            */
   /* -------------------------------------------------------------------------- */
   const onSubmit = async (data: any) => {
-    /* -------------------------- form loader on submit ------------------------- */
+    // form loader on submit
     setLoader(true);
-    /* ---------------------------- form data console --------------------------- */
+    // form data console
     if (formSubmit) {
       formSubmit(data);
     }
-    /* -------------------------- form loader on submit ------------------------- */
+    // form loader on submit
     setLoader(false);
+  };
+
+  /* -------------------------------------------------------------------------- */
+  /*                         Coupon Code submit handler                         */
+  /* -------------------------------------------------------------------------- */
+  const couponSubmitHandler = async (data: any) => {
+    // form loader on submit
+    setCouponLoader(true);
+    // form data console
+    if (couponSubmit) {
+      couponSubmit(data);
+    }
+    // form loader on submit
+    setCouponLoader(false);
   };
 
   return (
@@ -603,8 +644,8 @@ export const CheckOut = ({
             <div className="relative max-h-80 overflow-y-auto mb-10 scrollBar">
               {loading && <LoaderGrowing />}
               {cartData && cartData.length > 0 ? (
-                cartData.map((item, index) => (
-                  <div className="mb-7 flex gap-5" key={index}>
+                cartData.map((item: any) => (
+                  <div className="mb-7 flex gap-5" key={item.id}>
                     {/* Image here */}
                     <div className="flex-none">
                       {item?.featured_image ? (
@@ -624,13 +665,9 @@ export const CheckOut = ({
                     </div>
                     {/* Product details */}
                     <div className="flex-initial w-auto mr-1">
-                      <h3 className="line-clamp-2 text-lg text-[#283747] mb-3 leading-5">
-                        {/* {item.title} */}
-                        {"Product Name"}
-                      </h3>
+                      <h3 className="line-clamp-2 text-lg text-[#283747] mb-3 leading-5">{item.title}</h3>
                       <span className="text-[#283747] leading-7">
-                        {/* {"$" + Math.round(item.totals.total).toFixed(2)} */}
-                        {"$ 100"}
+                        {"$" + Math.round(item.totals.total / item.quantity.value).toFixed(2)}
                       </span>
                     </div>
                   </div>
@@ -642,21 +679,42 @@ export const CheckOut = ({
               )}
             </div>
             {/* Discount Coupon input */}
-            <div className="flex">
-              <div className="w-full">
-                <div className="relative">
-                  <label className="absolute -top-2 text-[#85929E] left-3 bg-white text-xs">Discount Coupon</label>
-                  <input
-                    className="appearance-none border rounded-l-md w-full py-3.5 px-5 text-gray-700 border-[#DDE6F5] leading-tight focus:outline-none focus:shadow-outline"
-                    type="text"
-                    placeholder="Coupon Code"
-                  />
+            <form onSubmit={couponHandleSubmit(couponSubmitHandler)}>
+              <div className="flex">
+                <div className="w-full">
+                  <div className="relative">
+                    <label
+                      htmlFor="couponCode"
+                      className={`absolute -top-2 ${
+                        couponErrors.couponCode ? "text-red-400" : "text-[#85929E]"
+                      } left-3 bg-white text-xs`}
+                    >
+                      Discount Coupon
+                    </label>
+                    <input
+                      className={`appearance-none border rounded-tl-md rounded-bl-md w-full py-3.5 px-5 ${
+                        couponErrors.couponCode ? "border-red-400" : "border-[#DDE6F5]"
+                      } text-gray-700 leading-tight focus:outline-none focus:shadow-lg focus:shadow-outline`}
+                      type="text"
+                      id="couponCode"
+                      placeholder="Coupon Code"
+                      {...couponRegister("couponCode", {
+                        required: true,
+                      })}
+                    />
+                  </div>
                 </div>
+                <button
+                  type="submit"
+                  disabled={!couponIsValid || couponLoader}
+                  className={`bg-gradient-to-br ${
+                    couponIsValid ? "cursor-pointer hover:opacity-80" : "cursor-not-allowed"
+                  } from-blueOne to-blueTwo flex justify-center items-center rounded-r duration-500 ease-in-out py-3 px-5 text-base text-white`}
+                >
+                  {couponLoader ? <FormLoader color="text-white" /> : "Apply"}
+                </button>
               </div>
-              <button className="bg-gradient-to-br from-blueOne to-blueTwo rounded-r duration-500 ease-in-out hover:opacity-80 py-3 px-5 text-base text-white">
-                Apply
-              </button>
-            </div>
+            </form>
             {/* information */}
             <div className="mt-5">
               <ul>
@@ -743,7 +801,7 @@ export const CheckOut = ({
                           className="font-semibold text-themeRedLight hover:text-themeDark transition hover:duration-300"
                         >
                           {" "}
-                          {companyPolicyData.companyName || "Company Name Policies"}
+                          {companyPolicyData.companyName || "Company Policies"}
                         </a>
                       </label>
                     </div>
