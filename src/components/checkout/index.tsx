@@ -65,7 +65,7 @@ interface companyPolicyDataInterface {
 // check out component props
 interface CheckOutProps {
   loading?: boolean;
-  userData?: userDataInterface | undefined;
+  userData?: userDataInterface;
   formSubmit?: (data: any) => void;
   couponSubmit?: (data: any) => void;
   autoFill?: boolean;
@@ -90,7 +90,7 @@ export const CheckOut = ({
   companyPolicyData,
   userLogin,
 }: CheckOutProps) => {
-  const [country, setCountry] = useState(Country.getAllCountries());
+  const country = Country.getAllCountries();
   const [state, setState] = useState(State.getAllStates());
   const [loader, setLoader] = useState<boolean>(false);
   const [couponLoader, setCouponLoader] = useState<boolean>(false);
@@ -119,7 +119,7 @@ export const CheckOut = ({
   /*                          if cartData is not passed                         */
   /* -------------------------------------------------------------------------- */
   if (!cartData) {
-    cartData = [];
+    cartData = null as any;
   }
 
   /* -------------------------------------------------------------------------- */
@@ -237,8 +237,10 @@ export const CheckOut = ({
     <div className="container mx-auto">
       <div className="lg:flex grid gap-10 mt-16 mb-28">
         {/* Form Body */}
-        <div className="2xl:w-3/4 lg:w-2/3 w-11/12 mx-auto ">
-          <div className="bg-white shadow-md rounded-xl overflow-hidden p-6">
+        <div className="2xl:w-3/4 lg:w-2/3 w-11/12 mx-auto">
+          <div className="bg-white shadow-md rounded-xl overflow-hidden p-6 relative">
+            {/* Form Loader */}
+            {(!cartData || loading) && <LoaderGrowing />}
             <div className=" grid lg:gap-3 gap-8">
               {/* Form Title */}
               <div className="flex p-2.5 bg-themeLightGray rounded font-medium text-xl text-themeDark mb-6">
@@ -606,7 +608,7 @@ export const CheckOut = ({
                 </form>
               )}
               {/* Cart Empty */}
-              {cartData && cartData.length === 0 && (
+              {(!cartData || cartData?.length === 0) && (
                 <div className="flex-col flex gap-5 justify-center items-center min-h-[200px]">
                   <svg
                     stroke="currentColor"
@@ -638,11 +640,12 @@ export const CheckOut = ({
         {/* Checkout Order Summery */}
         <div id="summary" className="2xl:max-w-md lg:w-1/3 w-11/12 mx-auto h-fit">
           <div className="bg-white sticky top-2 p-6 shadow-md rounded-xl overflow-hidden">
+            {/* Form Loader */}
+            {(!cartData || loading) && <LoaderGrowing />}
             {/* Title */}
             <h1 className="font-semibold text-2xl pb-7">Order Summary</h1>
             {/* Order summary */}
             <div className="relative max-h-80 overflow-y-auto mb-10 scrollBar">
-              {loading && <LoaderGrowing />}
               {cartData && cartData.length > 0 ? (
                 cartData.map((item: any) => (
                   <div className="mb-7 flex gap-5" key={item.id}>
