@@ -55,12 +55,11 @@
 
 ## About The Project
 
+The checkout-flow package is here to help streamline your checkout process. It includes all necessary pages such as the cart, checkout, thank you, and cancel pages. These pages are designed to provide an easy and smooth user experience for your customers. Additionally, the package includes helpful features such as form validation and cart management to ensure a secure and efficient checkout process. This is a first version, it may have some bugs or limitations but it will help you to get started with your checkout process. The package is built with flexibility in mind, allowing for easy customization to match your brand and design. Give checkout-flow a try and see how it can improve your customer's checkout experience.
+
   <a href="#">
     <img src="images/screenshot.png" alt="Logo" width="680" height="475">
   </a>
-
-The checkout-flow package is here to help streamline your checkout process. It includes all necessary pages such as the cart, checkout, thank you, and cancel pages. These pages are designed to provide an easy and smooth user experience for your customers. Additionally, the package includes helpful features such as form validation and cart management to ensure a secure and efficient checkout process. This is a first version, it may have some bugs or limitations but it will help you to get started with your checkout process. The package is built with flexibility in mind, allowing for easy customization to match your brand and design. Give checkout-flow a try and see how it can improve your customer's checkout experience.
-
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- GETTING STARTED -->
