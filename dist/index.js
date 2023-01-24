@@ -103,6 +103,7 @@ var FormLoader = ({ color }) => {
 
 // src/components/checkout/index.tsx
 var import_react_hook_form = require("react-hook-form");
+var import_image = __toESM(require("next/image"));
 var import_jsx_runtime2 = require("react/jsx-runtime");
 var CheckOut = ({
   loading,
@@ -459,7 +460,18 @@ var CheckOut = ({
               ]
             }
           ),
-          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "flex justify-center mt-6 w-1/3", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("img", { src: "/2checkout_logo.png", alt: "payment icon", width: "300", height: "100" }) }),
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "flex justify-center mt-6 w-1/3", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+            import_image.default,
+            {
+              src: "/2checkout_logo.png",
+              alt: "payment icon",
+              width: "300",
+              height: "100",
+              priority: true,
+              placeholder: "blur",
+              blurDataURL: "/2checkout_logo.png"
+            }
+          ) }),
           /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "flex justify-between mt-6", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(
             "a",
             {
@@ -526,13 +538,16 @@ var CheckOut = ({
         loading && /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(LoaderGrowing, {}),
         cartData && cartData.length > 0 ? cartData.map((item, index) => /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "mb-7 flex gap-5", children: [
           /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "flex-none", children: (item == null ? void 0 : item.featured_image) ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
-            "img",
+            import_image.default,
             {
               src: item.featured_image,
               alt: "Product",
               width: 90,
               height: 90,
-              className: "w-full rounded-md object-cover"
+              className: "w-full rounded-md object-cover",
+              priority: true,
+              placeholder: "blur",
+              blurDataURL: item.featured_image
             }
           ) : /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "w-[90px] h-[90px] rounded-md bg-[#F2F4F4] flex items-center justify-center" }) }),
           /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "flex-initial w-auto mr-1", children: [
