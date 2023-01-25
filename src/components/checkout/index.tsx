@@ -67,7 +67,9 @@ interface CheckOutProps {
   loading?: boolean;
   userData?: userDataInterface;
   formSubmit?: (data: any) => void;
+  formLoader?: boolean;
   couponSubmit?: (data: any) => void;
+  couponLoader?: boolean;
   autoFill?: boolean;
   cartData?: cartDataInterface[];
   summeryData?: summeryDataInterface;
@@ -81,7 +83,9 @@ export const CheckOut = ({
   loading,
   userData,
   formSubmit,
+  formLoader,
   couponSubmit,
+  couponLoader,
   autoFill,
   cartData,
   summeryData,
@@ -92,8 +96,6 @@ export const CheckOut = ({
 }: CheckOutProps) => {
   const country = Country.getAllCountries();
   const [state, setState] = useState(State.getAllStates());
-  const [loader, setLoader] = useState<boolean>(false);
-  const [couponLoader, setCouponLoader] = useState<boolean>(false);
 
   // billing form register hook
   const {
@@ -173,14 +175,31 @@ export const CheckOut = ({
   }
 
   /* -------------------------------------------------------------------------- */
+  /*                           state watch for country                          */
+  /* -------------------------------------------------------------------------- */
+  useEffect(() => {
+    if (watch("country")) {
+      setState(State.getStatesOfCountry(watch("country")));
+      // if autoFill is true then auto set the state value
+      if (autoFill && userData) {
+        setValue("state", userData.state, { shouldValidate: true });
+      }
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [watch("country"), autoFill, userData]);
+
+  /* -------------------------------------------------------------------------- */
   /*      if autoFill is true then auto fill the form using useEffect hook      */
   /* -------------------------------------------------------------------------- */
   useEffect(() => {
     if (autoFill && userData) {
       // react hook form setValue
       Object.keys(userData).forEach((key) => {
+        // if country is true then set the state
+        if (key === "country") setState(State.getStatesOfCountry(userData.country));
         // @ts-ignore
-        setValue(key, userData[key]);
+        setValue(key, userData[key], { shouldValidate: true });
       });
     }
     // if userLogin is true then auto fill the form using useEffect hook
@@ -195,42 +214,27 @@ export const CheckOut = ({
   }, [autoFill, userData, userLogin]);
 
   /* -------------------------------------------------------------------------- */
-  /*                           state watch for country                          */
-  /* -------------------------------------------------------------------------- */
-  useEffect(() => {
-    if (watch("country")) {
-      setState(State.getStatesOfCountry(watch("country")));
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [watch("country")]);
-
-  /* -------------------------------------------------------------------------- */
   /*                             form submit handler                            */
   /* -------------------------------------------------------------------------- */
   const onSubmit = async (data: any) => {
-    // form loader on submit
-    setLoader(true);
     // form data console
     if (formSubmit) {
       formSubmit(data);
+    } else {
+      console.log("formSubmit", data);
     }
-    // form loader on submit
-    setLoader(false);
   };
 
   /* -------------------------------------------------------------------------- */
   /*                         Coupon Code submit handler                         */
   /* -------------------------------------------------------------------------- */
   const couponSubmitHandler = async (data: any) => {
-    // form loader on submit
-    setCouponLoader(true);
     // form data console
     if (couponSubmit) {
       couponSubmit(data);
+    } else {
+      console.log("couponSubmit", data);
     }
-    // form loader on submit
-    setCouponLoader(false);
   };
 
   return (
@@ -559,15 +563,15 @@ export const CheckOut = ({
                       type="submit"
                       className={`${
                         isValid
-                          ? loader
+                          ? formLoader
                             ? "bg-gray-800 shadow-md text-white cursor-not-allowed"
                             : "bg-orangeTwo shadow-4xl text-white hover:opacity-70 cursor-pointer"
                           : "bg-orangeTwo text-white cursor-not-allowed opacity-50"
                       } transition-all duration-300 ease-in-out flex justify-center items-center gap-4 rounded-md text-base font-semibold font-Roboto capitalize py-4 px-7 mt-6`}
-                      disabled={!isValid || loader}
+                      disabled={!isValid || formLoader}
                     >
-                      {loader ? "Processing..." : "Place Order"}
-                      {loader && <FormLoader color="text-white" />}
+                      {formLoader ? "Processing..." : "Place Order"}
+                      {formLoader && <FormLoader color="text-white" />}
                     </button>
                     {/* Add a image  */}
                     <div className="flex justify-center mt-6 w-1/3">
