@@ -10,10 +10,12 @@ coverage
 
 # next.js
 .next/
+.npmignore
+.yarn
 out/
 build*
 dist*
-.npmignore
+
 
 # misc
 .DS_Store
