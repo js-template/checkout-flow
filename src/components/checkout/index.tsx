@@ -70,6 +70,7 @@ interface CheckOutProps {
   formLoader?: boolean;
   couponSubmit?: (data: any) => void;
   couponLoader?: boolean;
+  removeCouponHandler?: () => void;
   autoFill?: boolean;
   cartData?: cartDataInterface[];
   summeryData?: summeryDataInterface;
@@ -86,6 +87,7 @@ export const CheckOut = ({
   formLoader,
   couponSubmit,
   couponLoader,
+  removeCouponHandler,
   autoFill,
   cartData,
   summeryData,
@@ -234,6 +236,18 @@ export const CheckOut = ({
       couponSubmit(data);
     } else {
       console.log("couponSubmit", data);
+    }
+  };
+
+  /* -------------------------------------------------------------------------- */
+  /*                         Remove Coupon Code handler                         */
+  /* -------------------------------------------------------------------------- */
+  const couponRemoveHandler = async (data: any) => {
+    // form data console
+    if (removeCouponHandler) {
+      removeCouponHandler();
+    } else {
+      console.warn("Remove Coupon Props not passed. Please pass removeCouponHandler function props.");
     }
   };
 
@@ -674,7 +688,7 @@ export const CheckOut = ({
                     <div className="flex-initial w-auto mr-1">
                       <h3 className="line-clamp-2 text-lg text-[#283747] mb-3 leading-5">{item.title}</h3>
                       <span className="text-[#283747] leading-7">
-                        {"$" + Math.round(item.totals.total / item.quantity.value).toFixed(2)}
+                        {"$" + Math.round(Number(item.price) / 100 / item.quantity.value).toFixed(2)}
                       </span>
                     </div>
                   </div>
@@ -736,7 +750,28 @@ export const CheckOut = ({
                 {/* Discount */}
                 <li className="flex font-medium justify-between py-2 text-base text-[#5D6D7E]">
                   <span>Discount</span>
-                  <span className="text-[#FA4F58]">- ${summeryData?.discount.toFixed(2) || 0}</span>
+                  <span className="text-[#FA4F58] flex gap-3 items-center">
+                    - ${summeryData?.discount.toFixed(2) || 0}
+                    {/* add delete icon */}
+                    {summeryData?.discount > 0 && (
+                      <svg
+                        stroke="currentColor"
+                        fill="currentColor"
+                        stroke-width="0"
+                        viewBox="0 0 24 24"
+                        height="1em"
+                        width="1em"
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5 cursor-pointer"
+                        onClick={couponRemoveHandler}
+                      >
+                        <g>
+                          <path fill="none" d="M0 0h24v24H0z"></path>
+                          <path d="M7 4V2h10v2h5v2h-2v15a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6H2V4h5zM6 6v14h12V6H6zm3 3h2v8H9V9zm4 0h2v8h-2V9z"></path>
+                        </g>
+                      </svg>
+                    )}
+                  </span>
                 </li>
                 {/* Renewal On */}
                 <li className="flex font-medium justify-between py-2 text-base text-[#5D6D7E] border-t-2">
